@@ -49,6 +49,20 @@
     </nav>
 
     <div class="container-card">
+        <div class="mb-3">
+            <label class="form-label">Number of Questions</label>
+            <select id="questionLimit" class="form-select">
+                <option value="3">3</option>
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+            </select>
+        </div>
+        <div class="progress">
+            <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%">
+            </div>
+        </div>
+
+        <p id="progressText" class="mt-2 text-center"></p>
         <div class="container mt-5">
 
             <div class="card shadow p-4">
@@ -107,6 +121,13 @@
 
             </div>
 
+        </div>
+        <div id="sessionSummary" class="mt-4 text-center" style="display:none;">
+            <h4>Interview Completed 🎉</h4>
+            <p id="finalScore"></p>
+            <button class="btn btn-primary mt-2" onclick="restartSession()">
+                Restart Session
+            </button>
         </div>
     </div>
 
