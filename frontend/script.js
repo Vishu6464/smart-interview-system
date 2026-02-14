@@ -1,4 +1,4 @@
-const API_BASE = "https://abc123.ngrok-free.app";
+const API_BASE = "https://smart-interview-backend.onrender.com";
 
 let currentQuestionId = null;
 
