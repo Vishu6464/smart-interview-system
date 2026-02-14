@@ -1,44 +1,75 @@
-<body>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Smart Interview</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body onload="loadAnalytics()">
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="#">Smart Interview</a>
-
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="mock.html">Mock Interview</a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.html">Practice</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" href="dashboard.html">Dashboard</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="mock.html">Mock Interview</a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-5">
+    <div class="container-card mt-5">
 
-        <h3 class="text-center mb-4">Performance Dashboard</h3>
+        <h4 class="text-center mb-4">Performance Dashboard</h4>
 
-        <div class="card p-4 shadow mb-4">
-            <h5>Total Attempts: <span id="total"></span></h5>
-            <h5>Average Score: <span id="average"></span></h5>
+        <!-- KPI Cards -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card shadow p-3 text-center">
+                    <h6>Total Attempts</h6>
+                    <h2 id="total">0</h2>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow p-3 text-center">
+                    <h6>Average Score</h6>
+                    <h2 id="average">0</h2>
+                </div>
+            </div>
         </div>
 
-        <div class="card p-4 shadow">
+        <!-- Domain Chart -->
+        <div class="card shadow p-4 mb-4">
+            <h5 class="text-center mb-3">Domain Performance</h5>
             <canvas id="domainChart"></canvas>
+        </div>
+
+        <!-- Difficulty Chart (Frontend Derived) -->
+        <div class="card shadow p-4">
+            <h5 class="text-center mb-3">Difficulty Breakdown (Session)</h5>
+            <canvas id="difficultyChart"></canvas>
         </div>
 
     </div>
 
     <script src="script.js"></script>
-    <script>
-        loadAnalytics();
-    </script>
 
 </body>
+
+</html>

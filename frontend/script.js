@@ -190,14 +190,16 @@ async function loadAnalytics() {
     const data = await response.json();
 
     document.getElementById("total").innerText = data.total_attempts;
-    document.getElementById("average").innerText = data.average_score;
+    document.getElementById("average").innerText =
+        data.average_score.toFixed(2);
 
+    // ===== Domain Chart =====
     const domains = Object.keys(data.domain_performance);
     const scores = Object.values(data.domain_performance);
 
-    const ctx = document.getElementById("domainChart");
+    const ctx1 = document.getElementById("domainChart");
 
-    new Chart(ctx, {
+    new Chart(ctx1, {
         type: 'bar',
         data: {
             labels: domains,
@@ -206,6 +208,44 @@ async function loadAnalytics() {
                 data: scores,
                 backgroundColor: 'rgba(54, 162, 235, 0.7)'
             }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            }
         }
     });
+
+    // ===== Difficulty Chart (Session Only) =====
+    if (typeof sessionDifficulties !== "undefined" &&
+        sessionDifficulties.length > 0) {
+
+        let difficultyData = {
+            Easy: 0,
+            Medium: 0,
+            Hard: 0
+        };
+
+        for (let i = 0; i < sessionScores.length; i++) {
+            difficultyData[sessionDifficulties[i]] += sessionScores[i];
+        }
+
+        const ctx2 = document.getElementById("difficultyChart");
+
+        new Chart(ctx2, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(difficultyData),
+                datasets: [{
+                    data: Object.values(difficultyData),
+                    backgroundColor: [
+                        '#28a745',
+                        '#ffc107',
+                        '#dc3545'
+                    ]
+                }]
+            }
+        });
+    }
 }
