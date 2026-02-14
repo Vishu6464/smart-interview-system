@@ -1,0 +1,121 @@
+/* ===== Global Layout ===== */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    min-height: 100vh;
+    padding: 40px 20px;
+    margin: 0;
+}
+
+/* Center Container */
+.container-card {
+    max-width: 850px;
+    margin: auto;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* ===== Navbar Styling ===== */
+
+.navbar {
+    border-radius: 12px;
+}
+
+/* ===== Question Card ===== */
+
+.question-card {
+    background: #f8f9fc;
+    padding: 25px;
+    border-radius: 16px;
+    margin-top: 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    max-height: 400px;
+    overflow-y: auto;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+#questionBox {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    font-size: 16px;
+    line-height: 1.6;
+    font-family: Consolas, monospace;
+}
+
+/* ===== Buttons ===== */
+
+button {
+    border-radius: 10px !important;
+    padding: 8px 18px !important;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== Textarea ===== */
+
+textarea {
+    border-radius: 12px !important;
+    resize: none;
+    transition: all 0.2s ease;
+}
+
+textarea:focus {
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+    border-color: #667eea !important;
+}
+
+/* ===== Progress Bar ===== */
+
+.progress {
+    height: 20px;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #00c6ff, #0072ff);
+    transition: width 0.4s ease;
+}
+
+/* ===== Result Text ===== */
+
+#result {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* ===== Fade Animation ===== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== Responsive ===== */
+
+@media (max-width: 768px) {
+    .container-card {
+        padding: 25px;
+    }
+
+    body {
+        padding: 20px 10px;
+    }
+}
