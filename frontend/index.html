@@ -8,21 +8,6 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-
-
-    <style>
-        body {
-            background-color: #f4f6f9;
-        }
-
-        .card {
-            border-radius: 15px;
-        }
-
-        textarea {
-            resize: none;
-        }
-    </style>
 </head>
 
 <body>
@@ -31,7 +16,6 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="#">Smart Interview</a>
-
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
@@ -48,7 +32,12 @@
         </div>
     </nav>
 
-    <div class="container-card">
+    <!-- Main Card Container -->
+    <div class="container-card mt-5">
+
+        <h4 class="mb-4 text-center">Practice Coding Questions</h4>
+
+        <!-- Question Limit Selector -->
         <div class="mb-3">
             <label class="form-label">Number of Questions</label>
             <select id="questionLimit" class="form-select">
@@ -57,82 +46,82 @@
                 <option value="10">10</option>
             </select>
         </div>
-        <div class="progress">
-            <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%">
-                <p id="timerDisplay" class="text-end fw-bold"></p>
 
-            </div>
+        <!-- Progress Bar -->
+        <div class="progress">
+            <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
         </div>
 
         <p id="progressText" class="mt-2 text-center"></p>
-        <div class="container mt-5">
 
-            <div class="card shadow p-4">
+        <!-- Timer -->
+        <p id="timerDisplay" class="text-end fw-bold"></p>
 
-                <h4 class="mb-4 text-center">Practice Coding Questions</h4>
-
-                <!-- Domain & Difficulty -->
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label class="form-label">Domain</label>
-                        <select id="domain" class="form-select">
-                            <option value="python">Python</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Difficulty</label>
-                        <select id="difficulty" class="form-select">
-                            <option value="">Any</option>
-                            <option value="easy">Easy</option>
-                            <option value="medium">Medium</option>
-                            <option value="hard">Hard</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="text-center mb-4">
-                    <button class="btn btn-primary px-4" onclick="getQuestion()">
-                        Get Question
-                    </button>
-                </div>
-
-                <!-- Question Display -->
-                <div class="question-card">
-                    <h5 class="mb-3">Question</h5>
-                    <div id="questionBox"></div>
-                </div>
-
-                <!-- Answer Input -->
-                <div class="mb-3">
-                    <label class="form-label">Your Answer</label>
-                    <textarea id="answer" class="form-control" rows="6"
-                        placeholder="Write your explanation or code here..."></textarea>
-                </div>
-
-                <div class="text-center">
-                    <button class="btn btn-success px-4" onclick="submitAnswer()">
-                        Submit Answer
-                    </button>
-                </div>
-
-                <!-- Result -->
-                <div class="mt-4 text-center">
-                    <h5 id="result" class="text-success fw-bold"></h5>
-                </div>
-
+        <!-- Domain & Difficulty -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label">Domain</label>
+                <select id="domain" class="form-select">
+                    <option value="python">Python</option>
+                </select>
             </div>
 
+            <div class="col-md-6">
+                <label class="form-label">Difficulty</label>
+                <select id="difficulty" class="form-select">
+                    <option value="Easy">Easy</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="Hard">Hard</option>
+                </select>
+            </div>
         </div>
+
+        <!-- Get Question Button -->
+        <div class="text-center mb-4">
+            <button class="btn btn-primary px-4" onclick="getQuestion()">
+                Get Question
+            </button>
+        </div>
+
+        <!-- Question Display -->
+        <div class="question-card">
+            <h5 class="mb-3">Question</h5>
+            <div id="questionBox">
+                Click "Get Question" to begin.
+            </div>
+        </div>
+
+        <!-- Answer Input -->
+        <div class="mb-3 mt-3">
+            <label class="form-label">Your Answer</label>
+            <textarea id="answer" class="form-control" rows="6"
+                placeholder="Write your explanation or code here..."></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="text-center">
+            <button class="btn btn-success px-4" onclick="submitAnswer()">
+                Submit Answer
+            </button>
+        </div>
+
+        <!-- Result -->
+        <div class="mt-4 text-center">
+            <h5 id="result" class="text-success fw-bold"></h5>
+        </div>
+
+        <!-- Session Summary -->
         <div id="sessionSummary" class="mt-4 text-center" style="display:none;">
             <h4>Interview Completed 🎉</h4>
-            <p id="finalScore"></p>
+            <div id="finalScore"></div>
             <button class="btn btn-primary mt-2" onclick="restartSession()">
                 Restart Session
             </button>
         </div>
+
     </div>
 
+    <!-- Scripts -->
     <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
