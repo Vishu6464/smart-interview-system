@@ -36,37 +36,28 @@ def seed_data():
 
     db = SessionLocal()
 
-    # Seed only if empty
-    if db.query(models.Question).count() == 0:
+    try:
+        # DELETE existing questions
+        db.query(models.Question).delete()
+        db.commit()
 
-        try:
-            df = pd.read_csv("Python Programming Questions Dataset.csv")
+        df = pd.read_csv("Python Programming Questions Dataset.csv")
 
-            print("CSV loaded. Columns found:", df.columns)
+        for _, row in df.iterrows():
 
-            for _, row in df.iterrows():
+            question = models.Question(
+                domain="python",
+                difficulty=str(row.get("Difficulty", "Medium")).capitalize(),
+                question_text=str(row.get("Instruction")),
+                ideal_answer=str(row.get("Output"))
+            )
 
-                question_text = row.get("Instruction")
-                ideal_answer = row.get("Output")
+            db.add(question)
 
-                # If dataset contains difficulty column
-                difficulty = row.get("Difficulty", "Medium")
+        db.commit()
+        print("Database reseeded successfully.")
 
-                if question_text and ideal_answer:
-
-                    question = models.Question(
-                        domain="python",
-                        difficulty=str(difficulty).capitalize(),
-                        question_text=str(question_text),
-                        ideal_answer=str(ideal_answer)
-                    )
-
-                    db.add(question)
-
-            db.commit()
-            print("Questions loaded successfully from CSV.")
-
-        except Exception as e:
-            print("Error loading CSV:", e)
+    except Exception as e:
+        print("Error loading CSV:", e)
 
     db.close()
