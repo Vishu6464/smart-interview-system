@@ -25,12 +25,6 @@ app.include_router(question_router.router)
 app.include_router(attempt_router.router)
 app.include_router(analytics_router.router)
 
-@app.get("/seed-merged")
-def seed_merged():
-    from seed_all_questions import seed_data
-    seed_data()
-    return {"status": "merged seed executed"}
-
 @app.get("/")
 def health_check():
     return {"status": "Smart Interview Backend is Running"}

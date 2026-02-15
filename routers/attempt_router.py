@@ -35,5 +35,11 @@ def submit_answer(answer: schemas.AnswerRequest, db: Session = Depends(get_db)):
 
     db.add(attempt)
     db.commit()
+    db.refresh(attempt)
 
-    return {"score": score}
+    return {
+        "attempt_id": attempt.id,
+        "score": score,
+        "category": question.category,
+        "difficulty": question.difficulty
+    }
