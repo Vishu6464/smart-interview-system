@@ -25,6 +25,16 @@ app.include_router(question_router.router)
 app.include_router(attempt_router.router)
 app.include_router(analytics_router.router)
 
+@app.get("/clear-all")
+def clear_all():
+    db = SessionLocal()
+    try:
+        db.query(models.Attempt).delete()
+        db.query(models.Question).delete()
+        db.commit()
+        return {"status": "all questions cleared"}
+    finally:
+        db.close()
 
 @app.get("/")
 def health_check():
