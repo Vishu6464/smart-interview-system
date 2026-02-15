@@ -37,27 +37,32 @@ def seed_data():
     db = SessionLocal()
 
     try:
-        # DELETE existing questions
-        db.query(models.Question).delete()
-        db.commit()
+        # Only seed if no questions exist
+        question_count = db.query(models.Question).count()
 
-        df = pd.read_csv("Python Programming Questions Dataset.csv")
+        if question_count == 0:
 
-        for _, row in df.iterrows():
+            df = pd.read_csv("Python Programming Questions Dataset.csv")
 
-            question = models.Question(
-                domain="python",
-                difficulty=str(row.get("Difficulty", "Medium")).capitalize(),
-                question_text=str(row.get("Instruction")),
-                ideal_answer=str(row.get("Output"))
-            )
+            for _, row in df.iterrows():
 
-            db.add(question)
+                question = models.Question(
+                    domain="python",
+                    difficulty=str(row.get("Difficulty", "Medium")).capitalize(),
+                    question_text=str(row.get("Instruction")),
+                    ideal_answer=str(row.get("Output"))
+                )
 
-        db.commit()
-        print("Database reseeded successfully.")
+                db.add(question)
+
+            db.commit()
+            print("Database seeded successfully.")
+
+        else:
+            print("Database already contains questions. Skipping seed.")
 
     except Exception as e:
         print("Error loading CSV:", e)
 
-    db.close()
+    finally:
+        db.close()

@@ -1,0 +1,23 @@
+[33mf5e34fa[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Checking Model launch error
+[33m3789ba9[m Checking Model launch error
+[33m6fc271a[m force python 3.11 for stable ML deployment
+[33m5390fee[m Checking Model launch error
+[33m68aed2f[m clean production dependencies
+[33mdd651c2[m clean production dependencies
+[33mb1daef3[m fix torch version for render
+[33m0a188b8[m fix torch version for render
+[33m35bd73a[m force visible deploy test
+[33m537612e[m add reset route
+[33mb70bca6[m add reset route
+[33m282980f[m add reset route
+[33m81e1d57[m Updated Database along with some logic changes
+[33m4c7bcc9[m Upgraded professional dashboard analytics
+[33m3efde61[m Final simulator UI and  analytics upgrade
+[33mb3490d7[m Force reseed production DB
+[33mdf1ee33[m Added Some CSS changes and logic changes for smart things ike select number of questions
+[33md46af11[m Added Some CSS changes and logic changes for smart things ike select number of questions
+[33m670bcf0[m Added production UI styling
+[33m1caab83[m Updated frontend to use production backend
+[33m7ec7832[m Added health check endpoint
+[33m3168def[m Removed heavy ML libraries for production deployment
+[33mb98c218[m Initial commit - Smart Interview System
