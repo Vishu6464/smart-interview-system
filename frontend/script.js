@@ -197,6 +197,22 @@ async function startMock() {
     }
 
     displayMockQuestions(questions);
+} async function startMock() {
+
+    const domain = "python";   // fixed domain for mock
+
+    const response = await fetch(
+        `${API_BASE}/mock-balanced/${domain}`
+    );
+
+    const questions = await response.json();
+
+    if (!questions || questions.length === 0) {
+        alert("No mock questions found.");
+        return;
+    }
+
+    displayMockQuestions(questions);
 }
 
 
