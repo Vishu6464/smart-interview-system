@@ -18,11 +18,17 @@ let difficultyChartInstance = null;
 // coding flow
 async function getQuestion() {
 
+    const questionLimitEl = document.getElementById("questionLimit");
+    const domainEl = document.getElementById("domain");
+    const questionBox = document.getElementById("questionBox");
+
+    if (!questionLimitEl || !domainEl || !questionBox) return;
+
     if (currentQuestionIndex === 0) {
-        totalQuestions = parseInt(document.getElementById("questionLimit").value);
+        totalQuestions = parseInt(questionLimitEl.value);
         sessionScores = [];
         sessionDifficulties = [];
-        document.getElementById("questionLimit").disabled = true;
+        questionLimitEl.disabled = true;
     }
 
     if (currentQuestionIndex >= totalQuestions) {
@@ -32,22 +38,23 @@ async function getQuestion() {
 
     clearInterval(timerInterval);
 
-    const domain = document.getElementById("domain").value;
+    const domain = domainEl.value;
 
     const response = await fetch(`${API_BASE}/question/${domain}`);
     const data = await response.json();
 
-    if (!data || data.error) {
-        alert("No coding questions found.");
-        return;
-    }
+    if (!data || data.error) return;
 
     currentQuestionId = data.id;
     currentDifficulty = data.difficulty;
 
-    document.getElementById("questionBox").innerText = data.question_text;
-    document.getElementById("answer").value = "";
-    document.getElementById("result").innerText = "";
+    questionBox.innerText = data.question_text;
+
+    const answerEl = document.getElementById("answer");
+    const resultEl = document.getElementById("result");
+
+    if (answerEl) answerEl.value = "";
+    if (resultEl) resultEl.innerText = "";
 
     currentQuestionIndex++;
     updateProgress();
@@ -57,12 +64,13 @@ async function getQuestion() {
 
 async function submitAnswer() {
 
-    const answer = document.getElementById("answer").value.trim();
+    const answerEl = document.getElementById("answer");
+    const resultEl = document.getElementById("result");
 
-    if (answer === "") {
-        alert("Please write an answer before submitting.");
-        return;
-    }
+    if (!answerEl || !resultEl) return;
+
+    const answer = answerEl.value.trim();
+    if (!answer) return;
 
     clearInterval(timerInterval);
 
@@ -80,49 +88,40 @@ async function submitAnswer() {
     sessionScores.push(data.score);
     sessionDifficulties.push(currentDifficulty);
 
-    document.getElementById("result").innerText =
-        `Score: ${data.score} / 100`;
+    resultEl.innerText = `Score: ${data.score} / 100`;
 
-    setTimeout(() => {
-        getQuestion();
-    }, 1500);
+    setTimeout(() => getQuestion(), 1500);
 }
 
 
 function updateProgress() {
 
+    const bar = document.getElementById("progressBar");
+    const text = document.getElementById("progressText");
+
+    if (!bar || !text) return;
+
     let percent = (currentQuestionIndex / totalQuestions) * 100;
-
-    document.getElementById("progressBar").style.width = percent + "%";
-
-    document.getElementById("progressText").innerText =
-        `Question ${currentQuestionIndex} of ${totalQuestions}`;
+    bar.style.width = percent + "%";
+    text.innerText = `Question ${currentQuestionIndex} of ${totalQuestions}`;
 }
 
 
 function startTimer() {
 
-    timeRemaining = 60;
+    const timerEl = document.getElementById("timerDisplay");
+    if (!timerEl) return;
 
-    document.getElementById("timerDisplay").innerText =
-        `Time Left: ${timeRemaining}s`;
+    timeRemaining = 60;
+    timerEl.innerText = `Time Left: ${timeRemaining}s`;
 
     timerInterval = setInterval(() => {
 
         timeRemaining--;
-
-        document.getElementById("timerDisplay").innerText =
-            `Time Left: ${timeRemaining}s`;
-
-        if (timeRemaining <= 10) {
-            document.getElementById("timerDisplay").style.color = "red";
-        } else {
-            document.getElementById("timerDisplay").style.color = "black";
-        }
+        timerEl.innerText = `Time Left: ${timeRemaining}s`;
 
         if (timeRemaining <= 0) {
             clearInterval(timerInterval);
-            alert("Time's up!");
             getQuestion();
         }
 
@@ -132,33 +131,18 @@ function startTimer() {
 
 function showSummary() {
 
-    clearInterval(timerInterval);
+    const summary = document.getElementById("sessionSummary");
+    const finalScore = document.getElementById("finalScore");
 
-    document.getElementById("sessionSummary").style.display = "block";
-    document.getElementById("questionLimit").disabled = false;
+    if (!summary || !finalScore) return;
+
+    summary.style.display = "block";
 
     const total = sessionScores.reduce((a, b) => a + b, 0);
     const average = total / sessionScores.length;
 
-    let breakdown = { Easy: [], Medium: [], Hard: [] };
-
-    for (let i = 0; i < sessionScores.length; i++) {
-        breakdown[sessionDifficulties[i]].push(sessionScores[i]);
-    }
-
-    let html = `<p><strong>Overall Average:</strong> ${average.toFixed(2)} / 100</p>`;
-
-    for (let level in breakdown) {
-        if (breakdown[level].length > 0) {
-            let avg =
-                breakdown[level].reduce((a, b) => a + b, 0) /
-                breakdown[level].length;
-
-            html += `<p>${level}: ${avg.toFixed(2)} / 100</p>`;
-        }
-    }
-
-    document.getElementById("finalScore").innerHTML = html;
+    finalScore.innerHTML =
+        `<p><strong>Overall Average:</strong> ${average.toFixed(2)} / 100</p>`;
 }
 
 
@@ -170,55 +154,24 @@ function restartSession() {
 
     clearInterval(timerInterval);
 
-    document.getElementById("progressBar").style.width = "0%";
-    document.getElementById("progressText").innerText = "";
-    document.getElementById("sessionSummary").style.display = "none";
-    document.getElementById("result").innerText = "";
-    document.getElementById("questionBox").innerText =
-        "Click Get Question to begin.";
-    document.getElementById("timerDisplay").innerText = "";
+    const summary = document.getElementById("sessionSummary");
+    if (summary) summary.style.display = "none";
 }
 
 
 // mock interview
 async function startMock() {
 
-    const domain = document.getElementById("domain").value;
-
-    const response = await fetch(
-        `${API_BASE}/mock-balanced/${domain}`
-    );
-
-    const questions = await response.json();
-
-    if (!questions || questions.length === 0) {
-        alert("No mock questions found.");
-        return;
-    }
-
-    displayMockQuestions(questions);
-} async function startMock() {
-
-    const domain = "python";   // fixed domain for mock
-
-    const response = await fetch(
-        `${API_BASE}/mock-balanced/${domain}`
-    );
-
-    const questions = await response.json();
-
-    if (!questions || questions.length === 0) {
-        alert("No mock questions found.");
-        return;
-    }
-
-    displayMockQuestions(questions);
-}
-
-
-function displayMockQuestions(questions) {
-
     const container = document.getElementById("mockContainer");
+    if (!container) return;
+
+    const response = await fetch(
+        `${API_BASE}/mock-balanced/python`
+    );
+
+    const questions = await response.json();
+    if (!questions) return;
+
     container.innerHTML = "";
 
     questions.forEach((q, index) => {
@@ -237,50 +190,24 @@ function displayMockQuestions(questions) {
 // analytics
 async function loadAnalytics(category = null) {
 
+    const totalEl = document.getElementById("total");
+    const avgEl = document.getElementById("average");
+    const chart1 = document.getElementById("domainChart");
+    const chart2 = document.getElementById("difficultyChart");
+
+    if (!totalEl || !avgEl || !chart1 || !chart2) return;
+
     let url = `${API_BASE}/analytics`;
     if (category) url += `?category=${category}`;
 
     const response = await fetch(url);
     const data = await response.json();
 
-    if (!data) return;
-
-    document.getElementById("total").innerText = data.total_attempts;
-    document.getElementById("average").innerText =
-        data.average_score.toFixed(2);
-
-    const ctx1 = document.getElementById("domainChart");
-    if (domainChartInstance) domainChartInstance.destroy();
-
-    domainChartInstance = new Chart(ctx1, {
-        type: 'bar',
-        data: {
-            labels: Object.keys(data.domain_performance),
-            datasets: [{
-                data: Object.values(data.domain_performance),
-                backgroundColor: 'rgba(54,162,235,0.7)'
-            }]
-        },
-        options: { responsive: true, plugins: { legend: { display: false } } }
-    });
-
-    const ctx2 = document.getElementById("difficultyChart");
-    if (difficultyChartInstance) difficultyChartInstance.destroy();
-
-    difficultyChartInstance = new Chart(ctx2, {
-        type: 'pie',
-        data: {
-            labels: Object.keys(data.difficulty_breakdown),
-            datasets: [{
-                data: Object.values(data.difficulty_breakdown),
-                backgroundColor: ['#28a745', '#ffc107', '#dc3545']
-            }]
-        }
-    });
+    totalEl.innerText = data.total_attempts;
+    avgEl.innerText = data.average_score.toFixed(2);
 }
 
 
-// auto load analytics if dashboard exists
 window.onload = function () {
     if (document.getElementById("domainChart")) {
         loadAnalytics("coding");
