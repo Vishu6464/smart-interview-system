@@ -2,38 +2,45 @@ import pandas as pd
 import re
 from database import SessionLocal
 import models
-
+import re
 
 def parse_markdown_questions(file_path):
+
     with open(file_path, "r", encoding="utf-8") as f:
         content = f.read()
 
     questions = []
 
-    # Split by question headers like ## Q1
-    blocks = re.split(r"\n## Q\d+:", content)
+    # Match lines like:
+    # * [Q1: Question text](...)
+    pattern = r"\* \[Q(\d+): (.*?)\]\("
 
-    for block in blocks[1:]:
-        lines = block.strip().split("\n")
-        question_text = lines[0].strip()
+    matches = re.findall(pattern, content)
 
-        answer = "\n".join(lines[1:]).strip()
+    for q_number, question_text in matches:
 
-        # Decide category automatically
-        coding_keywords = ["Write", "Implement", "function", "code"]
-        if any(word.lower() in question_text.lower() for word in coding_keywords):
+        q_number = int(q_number)
+
+        # Manual classification
+        if q_number in [1,2,3,4,6,7,8,10,11,12]:
             category = "coding"
-            difficulty = "Medium"
         else:
             category = "mock"
+
+        # Manual difficulty mapping
+        if q_number in [1,2,5,10]:
+            difficulty = "Easy"
+        elif q_number in [3,4,7,9,11,14]:
             difficulty = "Medium"
+        else:
+            difficulty = "Hard"
 
         questions.append({
             "category": category,
             "domain": "python",
             "difficulty": difficulty,
-            "question_text": question_text,
-            "ideal_answer": answer
+            "question_text": question_text.strip(),
+            "ideal_answer": "Refer to markdown source for full answer."
         })
 
     return questions

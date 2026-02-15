@@ -6,6 +6,7 @@ class Question(Base):
     __tablename__ = "questions"
 
     id = Column(Integer, primary_key=True, index=True)
+    category = Column(String, default="coding")  # <-- ADD THIS
     domain = Column(String, index=True)
     difficulty = Column(String)
     question_text = Column(Text)

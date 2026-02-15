@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from database import SessionLocal
 import models
 
@@ -14,33 +15,41 @@ def get_db():
 
 
 @router.get("/analytics")
-def analytics(db: Session = Depends(get_db)):
+def analytics(category: str = "coding", db: Session = Depends(get_db)):
 
-    attempts = db.query(models.Attempt).all()
+    # Join attempts with questions (no N+1 problem)
+    results = (
+        db.query(models.Attempt, models.Question)
+        .join(models.Question, models.Attempt.question_id == models.Question.id)
+        .filter(models.Question.category == category)
+        .all()
+    )
 
-    if not attempts:
+    if not results:
         return {
             "total_attempts": 0,
             "average_score": 0,
-            "domain_performance": {}
+            "domain_performance": {},
+            "difficulty_breakdown": {}
         }
 
-    total_attempts = len(attempts)
-    avg_score = sum(a.score for a in attempts) / total_attempts
+    total_attempts = len(results)
+    avg_score = sum(attempt.score for attempt, _ in results) / total_attempts
 
     domain_scores = {}
+    difficulty_counts = {}
 
-    for attempt in attempts:
-        question = db.query(models.Question).filter(
-            models.Question.id == attempt.question_id
-        ).first()
+    for attempt, question in results:
 
-        domain = question.domain
+        # Domain performance
+        if question.domain not in domain_scores:
+            domain_scores[question.domain] = []
+        domain_scores[question.domain].append(attempt.score)
 
-        if domain not in domain_scores:
-            domain_scores[domain] = []
-
-        domain_scores[domain].append(attempt.score)
+        # Difficulty breakdown
+        if question.difficulty not in difficulty_counts:
+            difficulty_counts[question.difficulty] = 0
+        difficulty_counts[question.difficulty] += 1
 
     domain_avg = {
         domain: round(sum(scores) / len(scores), 2)
@@ -50,5 +59,6 @@ def analytics(db: Session = Depends(get_db)):
     return {
         "total_attempts": total_attempts,
         "average_score": round(avg_score, 2),
-        "domain_performance": domain_avg
+        "domain_performance": domain_avg,
+        "difficulty_breakdown": difficulty_counts
     }
