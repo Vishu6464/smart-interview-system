@@ -44,7 +44,7 @@ def seed_data():
 
         if question_count == 0:
 
-            df = pd.read_csv("Python Programming Questions Dataset.csv")
+            df = pd.read_csv("questions.csv")
 
             for _, row in df.iterrows():
 

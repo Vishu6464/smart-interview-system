@@ -55,7 +55,7 @@ def seed_data():
             return
 
         # Load CSV Coding Dataset
-        df = pd.read_csv("Python Programming Questions Dataset.csv")
+        df = pd.read_csv("questions.csv")
 
         for _, row in df.iterrows():
             question = models.Question(
@@ -69,7 +69,7 @@ def seed_data():
 
         # Load Markdown Dataset
         md_questions = parse_markdown_questions(
-            "Python Interview Questions & Answers for Data Scientists.md"
+            "questions.md"
         )
 
         for q in md_questions:
