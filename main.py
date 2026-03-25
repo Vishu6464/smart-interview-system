@@ -6,8 +6,12 @@ import pandas as pd
 
 from routers import question_router, attempt_router, analytics_router
 
+
 # Create tables
 models.Base.metadata.create_all(bind=engine)
+from seed_all_questions import seed_questions
+
+seed_questions()
 
 app = FastAPI()
 
