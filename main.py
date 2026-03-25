@@ -1,70 +1,47 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from database import engine, SessionLocal
+from database import engine
 import models
-import pandas as pd
 
 from routers import question_router, attempt_router, analytics_router
+from seed_all_questions import seed_data
 
 
 # Create tables
 models.Base.metadata.create_all(bind=engine)
-from seed_all_questions import seed_data
-seed_data()
 
+# Initialize app
 app = FastAPI()
+
+
+# Startup event (ONLY ONE — SAFE)
+@app.on_event("startup")
+def startup_event():
+    try:
+        print("🚀 Running DB seed on startup...")
+        seed_data()
+        print("✅ Startup completed successfully")
+    except Exception as e:
+        print("❌ Startup error:", e)
+
 
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # fine for demo
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routers
+
+# Include routers (NO CHANGE)
 app.include_router(question_router.router)
 app.include_router(attempt_router.router)
 app.include_router(analytics_router.router)
 
+
+# Health check
 @app.get("/")
 def health_check():
     return {"status": "Smart Interview Backend is Running"}
-
-
-@app.on_event("startup")
-def seed_data():
-
-    db = SessionLocal()
-
-    try:
-        # Only seed if no questions exist
-        question_count = db.query(models.Question).count()
-
-        if question_count == 0:
-
-            df = pd.read_csv("questions.csv")
-
-            for _, row in df.iterrows():
-
-                question = models.Question(
-                    domain="python",
-                    difficulty=str(row.get("Difficulty", "Medium")).capitalize(),
-                    question_text=str(row.get("Instruction")),
-                    ideal_answer=str(row.get("Output"))
-                )
-
-                db.add(question)
-
-            db.commit()
-            print("Database seeded successfully.")
-
-        else:
-            print("Database already contains questions. Skipping seed.")
-
-    except Exception as e:
-        print("Error loading CSV:", e)
-
-    finally:
-        db.close()
